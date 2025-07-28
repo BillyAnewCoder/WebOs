@@ -3,19 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebOS</title>
+    <title>LinuxOS - Web Desktop Environment</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Boot Screen -->
     <div id="bootScreen" class="boot-screen">
         <div class="boot-content">
-            <div class="boot-logo">🖥️</div>
-            <h1>WebOS</h1>
+            <div class="boot-logo">🐧</div>
+            <h1>LinuxOS Web Edition</h1>
             <div class="loading-bar">
                 <div class="loading-progress"></div>
             </div>
-            <p class="boot-text">Starting system...</p>
+            <div class="boot-text">
+                [ OK ] Starting kernel modules<br>
+                [ OK ] Mounting filesystems<br>
+                [ OK ] Starting network services<br>
+                [ OK ] Loading desktop environment<br>
+                <span style="color: #00ff00;">System ready.</span>
+            </div>
         </div>
     </div>
 
@@ -24,42 +31,62 @@
         <!-- Wallpaper -->
         <div class="wallpaper"></div>
 
+        <!-- Top Panel -->
+        <div class="top-panel">
+            <div class="panel-left">
+                <div class="activities-button" id="activitiesBtn">Activities</div>
+                <div class="panel-indicator" id="appsIndicator">Applications</div>
+            </div>
+            <div class="panel-center">
+                <span id="currentDate">Monday, January 1</span>
+            </div>
+            <div class="panel-right">
+                <div class="system-tray">
+                    <div class="tray-item" id="volumeIcon">🔊</div>
+                    <div class="tray-item" id="networkIcon">📶</div>
+                    <div class="tray-item" id="batteryIcon">🔋</div>
+                    <div class="tray-item" id="currentTime">12:00</div>
+                    <div class="tray-item" id="userMenu">👤</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Desktop Icons -->
         <div class="desktop-icons">
+            <div class="desktop-icon" data-app="filemanager">
+                <div class="icon">📁</div>
+                <span>Files</span>
+            </div>
             <div class="desktop-icon" data-app="terminal">
                 <div class="icon">💻</div>
                 <span>Terminal</span>
             </div>
-            <div class="desktop-icon" data-app="notes">
+            <div class="desktop-icon" data-app="texteditor">
                 <div class="icon">📝</div>
-                <span>Notes</span>
-            </div>
-            <div class="desktop-icon" data-app="fileexplorer">
-                <div class="icon">📁</div>
-                <span>Files</span>
+                <span>Text Editor</span>
             </div>
             <div class="desktop-icon" data-app="calculator">
                 <div class="icon">🧮</div>
                 <span>Calculator</span>
+            </div>
+            <div class="desktop-icon" data-app="settings">
+                <div class="icon">⚙️</div>
+                <span>Settings</span>
             </div>
         </div>
 
         <!-- Windows Container -->
         <div id="windowsContainer" class="windows-container"></div>
 
-        <!-- Taskbar -->
-        <div class="taskbar">
-            <div class="taskbar-left">
-                <div class="start-button">🖥️ WebOS</div>
-                <div class="taskbar-apps" id="taskbarApps"></div>
-            </div>
-            <div class="taskbar-right">
-                <div class="system-tray">
-                    <span class="time" id="currentTime">12:00</span>
-                    <div class="network-icon" id="networkIcon">📶</div>
-                    <div class="shutdown-btn" id="shutdownBtn">⏻</div>
-                </div>
-            </div>
+        <!-- Dock/Taskbar -->
+        <div class="taskbar" id="dock">
+            <div class="dock-item" data-app="filemanager" title="Files">📁</div>
+            <div class="dock-item" data-app="terminal" title="Terminal">💻</div>
+            <div class="dock-item" data-app="texteditor" title="Text Editor">📝</div>
+            <div class="dock-item" data-app="calculator" title="Calculator">🧮</div>
+            <div class="dock-separator"></div>
+            <div class="dock-item" id="showDesktop" title="Show Desktop">🏠</div>
+            <div class="dock-item" id="powerMenu" title="Power">⏻</div>
         </div>
     </div>
 
@@ -71,7 +98,44 @@
         </div>
     </div>
 
+    <!-- Context Menu -->
+    <div id="contextMenu" class="context-menu hidden">
+        <div class="context-menu-item" data-action="open">Open</div>
+        <div class="context-menu-item" data-action="copy">Copy</div>
+        <div class="context-menu-item" data-action="paste">Paste</div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" data-action="properties">Properties</div>
+    </div>
+
     <!-- Window Templates -->
+    <template id="filemanagerTemplate">
+        <div class="window fileexplorer-window" data-app="filemanager">
+            <div class="window-header">
+                <div class="window-title">
+                    <span class="window-icon">📁</span>
+                    File Manager
+                </div>
+                <div class="window-controls">
+                    <button class="minimize-btn">−</button>
+                    <button class="close-btn">×</button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="file-explorer-toolbar">
+                    <button class="toolbar-button" id="backBtn">← Back</button>
+                    <button class="toolbar-button" id="forwardBtn">Forward →</button>
+                    <button class="toolbar-button" id="upBtn">↑ Up</button>
+                    <input type="text" class="address-bar" id="addressBar" value="/home/user">
+                    <button class="toolbar-button" id="refreshBtn">🔄</button>
+                    <button class="toolbar-button" id="newFolderBtn">📁+</button>
+                </div>
+                <div class="file-explorer-content" id="fileContent">
+                    <!-- Files will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </template>
+
     <template id="terminalTemplate">
         <div class="window terminal-window" data-app="terminal">
             <div class="window-header">
@@ -86,23 +150,24 @@
             </div>
             <div class="window-content">
                 <div class="terminal-output" id="terminalOutput">
-                    <div class="terminal-line">WebOS Terminal v1.0</div>
+                    <div class="terminal-line">LinuxOS Terminal v2.0</div>
                     <div class="terminal-line">Type 'help' for available commands</div>
+                    <div class="terminal-line"></div>
                 </div>
                 <div class="terminal-input-line">
-                    <span class="terminal-prompt">user@webos:~$ </span>
+                    <span class="terminal-prompt">user@linuxos:~$ </span>
                     <input type="text" class="terminal-input" id="terminalInput" autocomplete="off">
                 </div>
             </div>
         </div>
     </template>
 
-    <template id="notesTemplate">
-        <div class="window notes-window" data-app="notes">
+    <template id="texteditorTemplate">
+        <div class="window notes-window" data-app="texteditor">
             <div class="window-header">
                 <div class="window-title">
                     <span class="window-icon">📝</span>
-                    Notes
+                    <span id="documentTitle">Untitled Document</span>
                 </div>
                 <div class="window-controls">
                     <button class="minimize-btn">−</button>
@@ -110,46 +175,20 @@
                 </div>
             </div>
             <div class="window-content">
-                <textarea class="notes-textarea" id="notesTextarea" placeholder="Start typing your notes..."></textarea>
-                <div class="notes-status">Auto-saved</div>
-            </div>
-        </div>
-    </template>
-
-    <template id="fileexplorerTemplate">
-        <div class="window fileexplorer-window" data-app="fileexplorer">
-            <div class="window-header">
-                <div class="window-title">
-                    <span class="window-icon">📁</span>
-                    File Explorer
+                <div class="notes-toolbar">
+                    <button id="newBtn">New</button>
+                    <button id="openBtn">Open</button>
+                    <button id="saveBtn">Save</button>
+                    <button id="saveAsBtn">Save As</button>
+                    <div style="margin-left: auto; display: flex; gap: 4px;">
+                        <button id="undoBtn">↶</button>
+                        <button id="redoBtn">↷</button>
+                    </div>
                 </div>
-                <div class="window-controls">
-                    <button class="minimize-btn">−</button>
-                    <button class="close-btn">×</button>
-                </div>
-            </div>
-            <div class="window-content">
-                <div class="file-explorer-toolbar">
-                    <button class="back-btn">← Back</button>
-                    <span class="current-path">/home/user</span>
-                </div>
-                <div class="file-explorer-content">
-                    <div class="file-item folder" data-name="Documents">
-                        <div class="file-icon">📁</div>
-                        <span class="file-name">Documents</span>
-                    </div>
-                    <div class="file-item folder" data-name="Pictures">
-                        <div class="file-icon">📁</div>
-                        <span class="file-name">Pictures</span>
-                    </div>
-                    <div class="file-item file" data-name="readme.txt">
-                        <div class="file-icon">📄</div>
-                        <span class="file-name">readme.txt</span>
-                    </div>
-                    <div class="file-item file" data-name="photo.jpg">
-                        <div class="file-icon">🖼️</div>
-                        <span class="file-name">photo.jpg</span>
-                    </div>
+                <textarea class="notes-textarea" id="textContent" placeholder="Start typing..."></textarea>
+                <div class="notes-status">
+                    <span id="statusText">Ready</span>
+                    <span style="margin-left: auto;" id="charCount">0 characters</span>
                 </div>
             </div>
         </div>
@@ -174,7 +213,7 @@
                     </div>
                     <div class="calculator-buttons">
                         <button class="calc-btn clear">C</button>
-                        <button class="calc-btn">±</button>
+                        <button class="calc-btn">CE</button>
                         <button class="calc-btn">%</button>
                         <button class="calc-btn operator">÷</button>
                         <button class="calc-btn">7</button>
@@ -192,6 +231,34 @@
                         <button class="calc-btn zero">0</button>
                         <button class="calc-btn">.</button>
                         <button class="calc-btn equals">=</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="settingsTemplate">
+        <div class="window settings-window" data-app="settings">
+            <div class="window-header">
+                <div class="window-title">
+                    <span class="window-icon">⚙️</span>
+                    Settings
+                </div>
+                <div class="window-controls">
+                    <button class="minimize-btn">−</button>
+                    <button class="close-btn">×</button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div style="display: flex; height: 100%;">
+                    <div style="width: 200px; background: #f8f9fa; border-right: 1px solid #dee2e6; padding: 12px;">
+                        <div class="settings-category active" data-category="appearance">🎨 Appearance</div>
+                        <div class="settings-category" data-category="system">💻 System</div>
+                        <div class="settings-category" data-category="network">🌐 Network</div>
+                        <div class="settings-category" data-category="about">ℹ️ About</div>
+                    </div>
+                    <div style="flex: 1; padding: 20px;" id="settingsContent">
+                        <!-- Settings content will be populated by JavaScript -->
                     </div>
                 </div>
             </div>
