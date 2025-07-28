@@ -1,0 +1,13 @@
+{
+  "name": "webos-fake-operating-system",
+  "version": "1.0.0",
+  "description": "A fake operating system interface built with HTML, CSS, and JavaScript",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve . -p 3000",
+    "start": "npx serve . -p 3000"
+  },
+  "keywords": ["webos", "fake-os", "operating-system", "web"],
+  "author": "",
+  "license": "MIT"
+}
