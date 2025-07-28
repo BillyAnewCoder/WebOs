@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebOS</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Boot Screen -->
+    <div id="bootScreen" class="boot-screen">
+        <div class="boot-content">
+            <div class="boot-logo">🖥️</div>
+            <h1>WebOS</h1>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p class="boot-text">Starting system...</p>
+        </div>
+    </div>
+
+    <!-- Desktop -->
+    <div id="desktop" class="desktop hidden">
+        <!-- Wallpaper -->
+        <div class="wallpaper"></div>
+
+        <!-- Desktop Icons -->
+        <div class="desktop-icons">
+            <div class="desktop-icon" data-app="terminal">
+                <div class="icon">💻</div>
+                <span>Terminal</span>
+            </div>
+            <div class="desktop-icon" data-app="notes">
+                <div class="icon">📝</div>
+                <span>Notes</span>
+            </div>
+            <div class="desktop-icon" data-app="fileexplorer">
+                <div class="icon">📁</div>
+                <span>Files</span>
+            </div>
+            <div class="desktop-icon" data-app="calculator">
+                <div class="icon">🧮</div>
+                <span>Calculator</span>
+            </div>
+        </div>
+
+        <!-- Windows Container -->
+        <div id="windowsContainer" class="windows-container"></div>
+
+        <!-- Taskbar -->
+        <div class="taskbar">
+            <div class="taskbar-left">
+                <div class="start-button">🖥️ WebOS</div>
+                <div class="taskbar-apps" id="taskbarApps"></div>
+            </div>
+            <div class="taskbar-right">
+                <div class="system-tray">
+                    <span class="time" id="currentTime">12:00</span>
+                    <div class="network-icon" id="networkIcon">📶</div>
+                    <div class="shutdown-btn" id="shutdownBtn">⏻</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shutdown Screen -->
+    <div id="shutdownScreen" class="shutdown-screen hidden">
+        <div class="shutdown-content">
+            <h1>System Shutting Down...</h1>
+            <div class="shutdown-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Window Templates -->
+    <template id="terminalTemplate">
+        <div class="window terminal-window" data-app="terminal">
+            <div class="window-header">
+                <div class="window-title">
+                    <span class="window-icon">💻</span>
+                    Terminal
+                </div>
+                <div class="window-controls">
+                    <button class="minimize-btn">−</button>
+                    <button class="close-btn">×</button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="terminal-output" id="terminalOutput">
+                    <div class="terminal-line">WebOS Terminal v1.0</div>
+                    <div class="terminal-line">Type 'help' for available commands</div>
+                </div>
+                <div class="terminal-input-line">
+                    <span class="terminal-prompt">user@webos:~$ </span>
+                    <input type="text" class="terminal-input" id="terminalInput" autocomplete="off">
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="notesTemplate">
+        <div class="window notes-window" data-app="notes">
+            <div class="window-header">
+                <div class="window-title">
+                    <span class="window-icon">📝</span>
+                    Notes
+                </div>
+                <div class="window-controls">
+                    <button class="minimize-btn">−</button>
+                    <button class="close-btn">×</button>
+                </div>
+            </div>
+            <div class="window-content">
+                <textarea class="notes-textarea" id="notesTextarea" placeholder="Start typing your notes..."></textarea>
+                <div class="notes-status">Auto-saved</div>
+            </div>
+        </div>
+    </template>
+
+    <template id="fileexplorerTemplate">
+        <div class="window fileexplorer-window" data-app="fileexplorer">
+            <div class="window-header">
+                <div class="window-title">
+                    <span class="window-icon">📁</span>
+                    File Explorer
+                </div>
+                <div class="window-controls">
+                    <button class="minimize-btn">−</button>
+                    <button class="close-btn">×</button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="file-explorer-toolbar">
+                    <button class="back-btn">← Back</button>
+                    <span class="current-path">/home/user</span>
+                </div>
+                <div class="file-explorer-content">
+                    <div class="file-item folder" data-name="Documents">
+                        <div class="file-icon">📁</div>
+                        <span class="file-name">Documents</span>
+                    </div>
+                    <div class="file-item folder" data-name="Pictures">
+                        <div class="file-icon">📁</div>
+                        <span class="file-name">Pictures</span>
+                    </div>
+                    <div class="file-item file" data-name="readme.txt">
+                        <div class="file-icon">📄</div>
+                        <span class="file-name">readme.txt</span>
+                    </div>
+                    <div class="file-item file" data-name="photo.jpg">
+                        <div class="file-icon">🖼️</div>
+                        <span class="file-name">photo.jpg</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="calculatorTemplate">
+        <div class="window calculator-window" data-app="calculator">
+            <div class="window-header">
+                <div class="window-title">
+                    <span class="window-icon">🧮</span>
+                    Calculator
+                </div>
+                <div class="window-controls">
+                    <button class="minimize-btn">−</button>
+                    <button class="close-btn">×</button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="calculator">
+                    <div class="calculator-display">
+                        <input type="text" class="calc-screen" id="calcScreen" readonly value="0">
+                    </div>
+                    <div class="calculator-buttons">
+                        <button class="calc-btn clear">C</button>
+                        <button class="calc-btn">±</button>
+                        <button class="calc-btn">%</button>
+                        <button class="calc-btn operator">÷</button>
+                        <button class="calc-btn">7</button>
+                        <button class="calc-btn">8</button>
+                        <button class="calc-btn">9</button>
+                        <button class="calc-btn operator">×</button>
+                        <button class="calc-btn">4</button>
+                        <button class="calc-btn">5</button>
+                        <button class="calc-btn">6</button>
+                        <button class="calc-btn operator">−</button>
+                        <button class="calc-btn">1</button>
+                        <button class="calc-btn">2</button>
+                        <button class="calc-btn">3</button>
+                        <button class="calc-btn operator">+</button>
+                        <button class="calc-btn zero">0</button>
+                        <button class="calc-btn">.</button>
+                        <button class="calc-btn equals">=</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+</html>
